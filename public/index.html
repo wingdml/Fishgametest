@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fish Tank</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Welcome to the Fish Tank!</h1>
+  <button id="submit">Add a Fish</button>
+  <div id="aquarium"></div>
+
+  <script>
+    const socket = io();
+
+    document.getElementById('submit').onclick = () => {
+      const fishData = { color: 'blue', size: 'small' };
+      socket.emit('newFish', fishData);
+    };
+
+    socket.on('init', (fishTank) => {
+      document.getElementById('aquarium').innerText = JSON.stringify(fishTank);
+    });
+
+    socket.on('addFish', (fishData) => {
+      const aquarium = document.getElementById('aquarium');
+      aquarium.innerText += '\n' + JSON.stringify(fishData);
+    });
+  </script>
+</body>
+</html>
