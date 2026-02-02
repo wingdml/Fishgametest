@@ -1,5 +1,3 @@
-console.log("server.js file is running");
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -8,21 +6,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve files from "public" folder
+// Serve Twine game files from "public"
 app.use(express.static('public'));
 
-let fishTank = [];
-
+// Handle player connections
 io.on('connection', (socket) => {
-  console.log('A user connected');
-  socket.emit('init', fishTank);
+  console.log('A player connected');
 
-  socket.on('newFish', (fishData) => {
-    fishTank.push(fishData);
-    io.emit('addFish', fishData);
+  socket.on('playerMessage', (msg) => {
+    // Broadcast to all players
+    io.emit('broadcastMessage', msg);
   });
 });
 
+// Start server on port 2433
 server.listen(2433, () => {
   console.log('Server running on http://localhost:2433');
 });
